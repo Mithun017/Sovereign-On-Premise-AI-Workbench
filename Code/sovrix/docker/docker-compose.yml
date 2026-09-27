@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  sovrix-db:
+    image: pgvector/pgvector:pg16
+    container_name: sovrix-postgres-pgvector
+    environment:
+      POSTGRES_DB: sovrix_db
+      POSTGRES_USER: sovrix_admin
+      POSTGRES_PASSWORD: sovrix_defense_secure_password_2026
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - sovrix-isolated-net
+
+  sovrix-redis:
+    image: redis:7-alpine
+    container_name: sovrix-redis-cache
+    ports:
+      - "6379:6379"
+    networks:
+      - sovrix-isolated-net
+
+  sovrix-backend:
+    build:
+      context: ../backend
+      dockerfile: ../docker/Dockerfile.backend
+    container_name: sovrix-api-engine
+    environment:
+      DATABASE_URL: postgresql://sovrix_admin:sovrix_defense_secure_password_2026@sovrix-db:5432/sovrix_db
+      REDIS_URL: redis://sovrix-redis:6379/0
+      AIR_GAPPED_MODE: "true"
+      ALLOW_EXTERNAL_CALLS: "false"
+      JWT_SECRET: "sovrix-sovereign-production-key-2026-industrial-defense"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - sovrix-db
+      - sovrix-redis
+    volumes:
+      - ../backend/uploads:/app/uploads
+      - ../backend/generated_deliverables:/app/generated_deliverables
+    networks:
+      - sovrix-isolated-net
+
+  sovrix-frontend:
+    build:
+      context: ../frontend
+      dockerfile: ../docker/Dockerfile.frontend
+    container_name: sovrix-web-console
+    ports:
+      - "5173:80"
+    depends_on:
+      - sovrix-backend
+    networks:
+      - sovrix-isolated-net
+
+networks:
+  sovrix-isolated-net:
+    driver: bridge
+    internal: true # STRICT AIR-GAP: Disables external internet routing on this container bridge
+
+volumes:
+  pgdata:

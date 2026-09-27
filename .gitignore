@@ -1,0 +1,44 @@
+# Confidential Documentation
+Doc/
+Doc/*
+doc/
+doc/*
+
+# Dependencies
+node_modules/
+dist/
+.vite/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+.eggs/
+
+# Environments & Local Secrets
+.env
+.env.local
+venv/
+env/
+ENV/
+
+# Database & Runtime Artifacts
+*.db
+*.sqlite
+*.sqlite3
+sovrix_enterprise.db
+uploads/*
+!uploads/.gitkeep
+generated_deliverables/*
+!generated_deliverables/.gitkeep
+
+# IDE & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
