@@ -39,49 +39,49 @@ export const AgentStepTimeline: React.FC<AgentStepTimelineProps> = ({
   };
 
   const getStepIcon = (type: string, status: StepStatus) => {
-    if (status === 'RUNNING') return <PlayCircle className="w-4 h-4 text-cyan-400 animate-spin" />;
-    if (status === 'FAILED') return <AlertCircle className="w-4 h-4 text-rose-400" />;
+    if (status === 'RUNNING') return <PlayCircle className="w-4 h-4 text-[#5B4EB1] animate-spin" />;
+    if (status === 'FAILED') return <AlertCircle className="w-4 h-4 text-rose-500" />;
     
     switch (type.toUpperCase()) {
       case 'CLASSIFY':
-        return <Layers className="w-4 h-4 text-cyan-400" />;
+        return <Layers className="w-4 h-4 text-[#5B4EB1]" />;
       case 'OCR':
       case 'VISION':
-        return <FileText className="w-4 h-4 text-purple-400" />;
+        return <FileText className="w-4 h-4 text-purple-600" />;
       case 'KB_SEARCH':
-        return <FileCheck2 className="w-4 h-4 text-indigo-400" />;
+        return <FileCheck2 className="w-4 h-4 text-indigo-600" />;
       case 'CALCULATION':
-        return <Calculator className="w-4 h-4 text-amber-400" />;
+        return <Calculator className="w-4 h-4 text-amber-600" />;
       case 'SANDBOX_RUN':
       case 'CODE_GEN':
-        return <Terminal className="w-4 h-4 text-emerald-400" />;
+        return <Terminal className="w-4 h-4 text-emerald-600" />;
       case 'DELIVERABLE':
-        return <CheckCircle2 className="w-4 h-4 text-cyan-400" />;
+        return <CheckCircle2 className="w-4 h-4 text-[#5B4EB1]" />;
       default:
-        return <Wrench className="w-4 h-4 text-slate-400" />;
+        return <Wrench className="w-4 h-4 text-[#4B506C]" />;
     }
   };
 
   return (
-    <div className="bg-slate-900/95 border border-slate-800 rounded-xl p-4 shadow-xl space-y-4 font-sans">
+    <div className="bg-[#FCFBFF] border border-[#E1D9F0] rounded-xl p-4 shadow-md space-y-4 font-sans">
       {/* Execution Header Meta */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-800 text-xs">
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[#E1D9F0] text-xs">
         <div className="flex items-center gap-2">
-          <span className="text-slate-400 font-medium">Task Class:</span>
-          <span className="px-2 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-800/60 font-mono font-semibold">
+          <span className="text-[#4B506C] font-semibold">Task Class:</span>
+          <span className="px-2.5 py-0.5 rounded bg-[#E9D1F1] text-[#121334] border border-[#E1D9F0] font-mono font-bold">
             {taskClassification}
           </span>
         </div>
-        <div className="flex items-center gap-3 font-mono text-[11px] text-slate-400">
+        <div className="flex items-center gap-3 font-mono text-[11px] text-[#4B506C]">
           <div className="flex items-center gap-1">
-            <Cpu className="w-3.5 h-3.5 text-indigo-400" />
-            <span className="text-slate-300">{selectedModel}</span>
+            <Cpu className="w-3.5 h-3.5 text-[#5B4EB1]" />
+            <span className="text-[#121334] font-medium">{selectedModel}</span>
           </div>
           <div className="flex items-center gap-1">
-            <Clock className="w-3.5 h-3.5 text-amber-400" />
-            <span className="text-slate-300">{totalDurationMs} ms</span>
+            <Clock className="w-3.5 h-3.5 text-amber-600" />
+            <span className="text-[#121334] font-medium">{totalDurationMs} ms</span>
           </div>
-          <div className="flex items-center gap-1 text-emerald-400 font-semibold">
+          <div className="flex items-center gap-1 text-emerald-700 font-bold">
             <Lock className="w-3.5 h-3.5" />
             <span>0 Ext. Calls</span>
           </div>
@@ -95,48 +95,48 @@ export const AgentStepTimeline: React.FC<AgentStepTimelineProps> = ({
           return (
             <div
               key={step.id || idx}
-              className="rounded-lg border border-slate-800/90 bg-slate-950/70 hover:border-slate-700/80 transition-all overflow-hidden"
+              className="rounded-lg border border-[#E1D9F0] bg-[#FFFFFF] hover:border-[#8F92C0] transition-all overflow-hidden shadow-sm"
             >
               {/* Step Summary Bar */}
               <div 
                 onClick={() => toggleExpand(step.id)}
-                className="p-3 flex items-center justify-between cursor-pointer hover:bg-slate-900/40 select-none"
+                className="p-3 flex items-center justify-between cursor-pointer hover:bg-[#ECE1F3]/40 select-none"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-6 h-6 rounded-md bg-slate-900 border border-slate-700/60 flex items-center justify-center shrink-0">
+                  <div className="w-6 h-6 rounded-md bg-[#ECE1F3] border border-[#E1D9F0] flex items-center justify-center shrink-0">
                     {getStepIcon(step.step_type, step.status)}
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-mono font-bold text-slate-400">Step {step.step_number}:</span>
-                      <span className="text-xs font-semibold text-slate-200 truncate">{step.step_title}</span>
+                      <span className="text-[11px] font-mono font-bold text-[#8F92C0]">Step {step.step_number}:</span>
+                      <span className="text-xs font-bold text-[#121334] truncate">{step.step_title}</span>
                     </div>
                     {step.tool_name && (
-                      <span className="text-[10px] font-mono text-cyan-400">Tool: {step.tool_name}</span>
+                      <span className="text-[10px] font-mono text-[#5B4EB1] font-semibold">Tool: {step.tool_name}</span>
                     )}
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-[10px] font-mono text-slate-500">{step.duration_ms}ms</span>
+                  <span className="text-[10px] font-mono text-[#8F92C0]">{step.duration_ms}ms</span>
                   <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${
-                    step.status === 'SUCCESS' ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-800/60' :
-                    step.status === 'RUNNING' ? 'bg-cyan-950/80 text-cyan-400 border border-cyan-800/60 animate-pulse' :
-                    'bg-rose-950/80 text-rose-400 border border-rose-800/60'
+                    step.status === 'SUCCESS' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
+                    step.status === 'RUNNING' ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 animate-pulse' :
+                    'bg-rose-50 text-rose-700 border border-rose-200'
                   }`}>
                     {step.status}
                   </span>
-                  {isExpanded ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
+                  {isExpanded ? <ChevronUp className="w-4 h-4 text-[#8F92C0]" /> : <ChevronDown className="w-4 h-4 text-[#8F92C0]" />}
                 </div>
               </div>
 
               {/* Step Expanded Details Drawer */}
               {isExpanded && (
-                <div className="p-3 bg-slate-950 border-t border-slate-800/80 text-xs font-mono space-y-2">
+                <div className="p-3 bg-[#FCFBFF] border-t border-[#E1D9F0] text-xs font-mono space-y-2">
                   {step.input_payload && Object.keys(step.input_payload).length > 0 && (
                     <div>
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Input Context:</span>
-                      <pre className="p-2 rounded bg-slate-900 text-slate-300 text-[11px] overflow-x-auto max-h-32">
+                      <span className="text-[10px] font-bold text-[#4B506C] uppercase tracking-wider block mb-1">Input Context:</span>
+                      <pre className="p-2 rounded bg-[#ECE1F3]/60 text-[#121334] border border-[#E1D9F0] text-[11px] overflow-x-auto max-h-32">
                         {JSON.stringify(step.input_payload, null, 2)}
                       </pre>
                     </div>
@@ -144,8 +144,8 @@ export const AgentStepTimeline: React.FC<AgentStepTimelineProps> = ({
 
                   {step.output_payload && Object.keys(step.output_payload).length > 0 && (
                     <div>
-                      <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-wider block mb-1">Execution Output:</span>
-                      <pre className="p-2 rounded bg-slate-900 text-slate-200 text-[11px] overflow-x-auto max-h-48 whitespace-pre-wrap">
+                      <span className="text-[10px] font-bold text-[#5B4EB1] uppercase tracking-wider block mb-1">Execution Output:</span>
+                      <pre className="p-2 rounded bg-[#ECE1F3]/60 text-[#1A1B3B] border border-[#E1D9F0] text-[11px] overflow-x-auto max-h-48 whitespace-pre-wrap">
                         {typeof step.output_payload.extracted_text === 'string' 
                           ? step.output_payload.extracted_text 
                           : JSON.stringify(step.output_payload, null, 2)}
@@ -160,7 +160,7 @@ export const AgentStepTimeline: React.FC<AgentStepTimelineProps> = ({
       </div>
 
       {isStreaming && (
-        <div className="flex items-center gap-2 text-xs font-mono text-cyan-400 animate-pulse pt-2">
+        <div className="flex items-center gap-2 text-xs font-mono text-[#5B4EB1] animate-pulse pt-2 font-semibold">
           <PlayCircle className="w-4 h-4 animate-spin" />
           <span>Executing on-premise neural agent step...</span>
         </div>

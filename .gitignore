@@ -36,9 +36,14 @@ uploads/*
 !uploads/.gitkeep
 generated_deliverables/*
 !generated_deliverables/.gitkeep
+**/uploads/*
+!**/uploads/.gitkeep
+**/generated_deliverables/*
+!**/generated_deliverables/.gitkeep
 
 # IDE & OS files
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
+

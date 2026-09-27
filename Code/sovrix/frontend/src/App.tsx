@@ -17,14 +17,14 @@ import { Administration } from './pages/Administration';
 export const App: React.FC = () => {
   return (
     <Router>
-      <div className="flex h-screen w-screen overflow-hidden bg-[#090d16] text-slate-100 antialiased">
+      <div className="flex h-screen w-screen overflow-hidden bg-[#EFEDF5] text-[#1A1B3B] antialiased">
         {/* Persistent Left Sidebar */}
         <Sidebar />
 
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           <Header />
-          <main className="flex-1 overflow-y-auto bg-[#0b101c]">
+          <main className="flex-1 overflow-y-auto bg-[#EFEDF5]">
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/dashboard" element={<Dashboard />} />

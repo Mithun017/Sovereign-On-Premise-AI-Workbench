@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   FileSpreadsheet, 
-  FileText, 
-  Presentation, 
-  Download, 
-  Plus, 
-  CheckCircle2, 
-  Sparkles,
-  Layers,
-  HardDrive
+  Plus
 } from 'lucide-react';
 import { api } from '../services/api';
 import { DeliverableItem } from '../types';
@@ -127,13 +120,13 @@ export const Deliverables: React.FC = () => {
   return (
     <div className="p-8 space-y-8 max-w-7xl mx-auto font-sans">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E1D9F0]">
         <div>
-          <h1 className="text-xl font-extrabold text-white font-mono flex items-center gap-2">
-            <FileSpreadsheet className="w-5 h-5 text-cyan-400" />
+          <h1 className="text-xl font-extrabold text-[#121334] font-mono flex items-center gap-2">
+            <FileSpreadsheet className="w-5 h-5 text-[#5B4EB1]" />
             <span>DOCUMENT FACTORY & GENERATED DELIVERABLES</span>
           </h1>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-[#4B506C]">
             Real binary file generation for enterprise approval notes (.DOCX), analytics (.XLSX), presentations (.PPTX), and reports (.PDF).
           </p>
         </div>
@@ -143,7 +136,7 @@ export const Deliverables: React.FC = () => {
           <button
             onClick={handleCreateWordNote}
             disabled={isGenerating}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs font-mono transition-all shadow-md"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs font-mono transition-all shadow-sm"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Word Note (.DOCX)</span>
@@ -151,7 +144,7 @@ export const Deliverables: React.FC = () => {
           <button
             onClick={handleCreateExcel}
             disabled={isGenerating}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs font-mono transition-all shadow-md"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs font-mono transition-all shadow-sm"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Excel Sheet (.XLSX)</span>
@@ -159,7 +152,7 @@ export const Deliverables: React.FC = () => {
           <button
             onClick={handleCreatePowerPoint}
             disabled={isGenerating}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs font-mono transition-all shadow-md"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs font-mono transition-all shadow-sm"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>PowerPoint (.PPTX)</span>
@@ -168,15 +161,15 @@ export const Deliverables: React.FC = () => {
       </div>
 
       {/* Tabs Filter */}
-      <div className="flex items-center gap-2 border-b border-slate-800 pb-2 text-xs font-mono">
+      <div className="flex items-center gap-2 border-b border-[#E1D9F0] pb-2 text-xs font-mono">
         {(['ALL', 'DOCX', 'XLSX', 'PPTX', 'PDF'] as const).map(tab => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-3 py-1.5 rounded-lg font-bold transition-all ${
+            className={`px-3 py-1.5 rounded-xl font-bold transition-all ${
               activeTab === tab
-                ? 'bg-cyan-950 text-cyan-300 border border-cyan-500/50'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
+                ? 'bg-[#E9D1F1] text-[#121334] border border-[#5B4EB1]'
+                : 'text-[#4B506C] hover:text-[#121334] hover:bg-[#ECE1F3]'
             }`}
           >
             {tab} Files

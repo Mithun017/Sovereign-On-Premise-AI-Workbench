@@ -2,16 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Cpu, 
   Plus, 
-  CheckCircle2, 
-  XCircle, 
-  RefreshCw, 
-  Activity, 
-  HardDrive, 
-  ShieldCheck,
-  Eye,
-  Terminal,
-  Calculator,
-  Sliders
+  RefreshCw
 } from 'lucide-react';
 import { api } from '../services/api';
 import { AIModel } from '../types';
@@ -99,20 +90,20 @@ export const ModelRegistry: React.FC = () => {
   return (
     <div className="p-8 space-y-8 max-w-7xl mx-auto font-sans">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E1D9F0]">
         <div>
-          <h1 className="text-xl font-extrabold text-white font-mono flex items-center gap-2">
-            <Cpu className="w-5 h-5 text-cyan-400" />
+          <h1 className="text-xl font-extrabold text-[#121334] font-mono flex items-center gap-2">
+            <Cpu className="w-5 h-5 text-[#5B4EB1]" />
             <span>LOCAL MODEL REGISTRY & ADAPTER CONFIGURATION</span>
           </h1>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-[#4B506C]">
             Configure local inference endpoints (Ollama, vLLM, llama.cpp, Sovereign Embedded) with zero hardcoding.
           </p>
         </div>
 
         <button
           onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-xs font-mono transition-all shadow-lg shadow-cyan-600/20"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#5B4EB1] hover:bg-[#4F46E5] text-white font-bold text-xs font-mono transition-all shadow-sm"
         >
           <Plus className="w-4 h-4" />
           <span>Register New Local Model</span>
@@ -122,23 +113,23 @@ export const ModelRegistry: React.FC = () => {
       {/* Model Cards Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {models.map(m => (
-          <div key={m.id} className="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-xl space-y-4">
+          <div key={m.id} className="p-6 rounded-2xl bg-[#FCFBFF] border border-[#E1D9F0] shadow-sm space-y-4">
             <div className="flex items-start justify-between">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <h3 className="font-bold text-sm text-slate-100">{m.name}</h3>
+                  <h3 className="font-bold text-sm text-[#121334]">{m.name}</h3>
                   <span className={`text-[10px] font-mono px-2 py-0.5 rounded font-bold border ${
                     m.health_status === 'ONLINE'
-                      ? 'bg-emerald-950 text-emerald-400 border-emerald-800'
-                      : 'bg-rose-950 text-rose-400 border-rose-800'
+                      ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                      : 'bg-rose-50 text-rose-800 border-rose-300'
                   }`}>
                     {m.health_status}
                   </span>
                 </div>
-                <code className="text-xs font-mono text-cyan-400 block">{m.identifier}</code>
+                <code className="text-xs font-mono text-[#5B4EB1] font-semibold block">{m.identifier}</code>
               </div>
 
-              <span className="text-xs font-mono uppercase px-2 py-1 rounded bg-slate-800 text-slate-300 border border-slate-700 font-semibold">
+              <span className="text-xs font-mono uppercase px-2.5 py-1 rounded bg-[#ECE1F3] text-[#121334] border border-[#E1D9F0] font-bold">
                 {m.provider}
               </span>
             </div>
@@ -146,51 +137,51 @@ export const ModelRegistry: React.FC = () => {
             {/* Capabilities Badges */}
             <div className="flex flex-wrap gap-1.5 pt-1">
               {m.reasoning_support && (
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-800">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#E9D1F1] text-[#121334] font-bold border border-[#E1D9F0]">
                   Reasoning
                 </span>
               )}
               {m.coding_support && (
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-100 text-emerald-900 font-bold border border-emerald-300">
                   Coding
                 </span>
               )}
               {m.vision_support && (
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-100 text-purple-900 font-bold border border-purple-300">
                   Vision / Multimodal
                 </span>
               )}
               {m.ocr_support && (
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#ECE1F3] text-[#5B4EB1] font-bold border border-[#E1D9F0]">
                   OCR Engine
                 </span>
               )}
               {m.spreadsheet_support && (
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-bold border border-amber-300">
                   Spreadsheet
                 </span>
               )}
             </div>
 
             {/* Technical Parameters Table */}
-            <div className="grid grid-cols-3 gap-2 p-3 rounded-xl bg-slate-950 border border-slate-800/80 text-xs font-mono">
+            <div className="grid grid-cols-3 gap-2 p-3 rounded-xl bg-[#FFFFFF] border border-[#E1D9F0] text-xs font-mono shadow-sm">
               <div>
-                <span className="text-[10px] text-slate-500 block">Context Window</span>
-                <span className="text-slate-300 font-semibold">{(m.context_length / 1024).toFixed(0)}k tokens</span>
+                <span className="text-[10px] text-[#8F92C0] block font-semibold">Context Window</span>
+                <span className="text-[#121334] font-bold">{(m.context_length / 1024).toFixed(0)}k tokens</span>
               </div>
               <div>
-                <span className="text-[10px] text-slate-500 block">VRAM Required</span>
-                <span className="text-slate-300 font-semibold">{m.vram_requirement_gb} GB</span>
+                <span className="text-[10px] text-[#8F92C0] block font-semibold">VRAM Required</span>
+                <span className="text-[#121334] font-bold">{m.vram_requirement_gb} GB</span>
               </div>
               <div>
-                <span className="text-[10px] text-slate-500 block">Priority</span>
-                <span className="text-slate-300 font-semibold">Rank #{m.priority}</span>
+                <span className="text-[10px] text-[#8F92C0] block font-semibold">Priority</span>
+                <span className="text-[#121334] font-bold">Rank #{m.priority}</span>
               </div>
             </div>
 
             {/* Actions Bar */}
-            <div className="flex items-center justify-between pt-2 border-t border-slate-800 text-xs font-mono">
-              <span className="text-slate-500 text-[10px] truncate max-w-[200px]">
+            <div className="flex items-center justify-between pt-2 border-t border-[#E1D9F0] text-xs font-mono">
+              <span className="text-[#4B506C] text-[10px] truncate max-w-[200px]">
                 Endpoint: {m.endpoint}
               </span>
 
@@ -198,18 +189,18 @@ export const ModelRegistry: React.FC = () => {
                 <button
                   onClick={() => handleHealthCheck(m.id)}
                   disabled={isHealthChecking[m.id]}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all text-xs"
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#ECE1F3] hover:bg-[#E9D1F1] text-[#121334] font-bold transition-all text-xs border border-[#E1D9F0]"
                 >
-                  <RefreshCw className={`w-3 h-3 ${isHealthChecking[m.id] ? 'animate-spin text-cyan-400' : ''}`} />
+                  <RefreshCw className={`w-3 h-3 ${isHealthChecking[m.id] ? 'animate-spin text-[#5B4EB1]' : ''}`} />
                   <span>Test Health</span>
                 </button>
 
                 <button
                   onClick={() => handleToggle(m.id)}
-                  className={`px-2.5 py-1 rounded font-bold text-xs transition-all ${
+                  className={`px-3 py-1.5 rounded-lg font-bold text-xs transition-all ${
                     m.is_enabled
-                      ? 'bg-emerald-950 text-emerald-400 border border-emerald-800/60'
-                      : 'bg-slate-800 text-slate-400'
+                      ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                      : 'bg-[#ECE1F3] text-[#8F92C0]'
                   }`}
                 >
                   {m.is_enabled ? 'Enabled' : 'Disabled'}
@@ -222,41 +213,41 @@ export const ModelRegistry: React.FC = () => {
 
       {/* Add Model Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 max-w-lg w-full space-y-4 shadow-2xl">
-            <h3 className="text-base font-bold text-slate-100 font-mono">Register Local Model Adapter</h3>
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-[#FFFFFF] border border-[#E1D9F0] rounded-2xl p-6 max-w-lg w-full space-y-4 shadow-2xl">
+            <h3 className="text-base font-bold text-[#121334] font-mono">Register Local Model Adapter</h3>
             
             <form onSubmit={handleAddModel} className="space-y-3 text-xs">
               <div>
-                <label className="text-slate-400 font-mono block mb-1">Model Name</label>
+                <label className="text-[#4B506C] font-mono font-bold block mb-1">Model Name</label>
                 <input
                   type="text"
                   required
                   value={formData.name}
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
                   placeholder="e.g. Llama-3.3-70B-Instruct"
-                  className="w-full p-2 rounded-lg bg-slate-950 border border-slate-800 text-slate-200 focus:outline-none focus:border-cyan-500"
+                  className="w-full p-2.5 rounded-lg bg-[#FCFBFF] border border-[#E1D9F0] text-[#121334] focus:outline-none focus:border-[#5B4EB1]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-slate-400 font-mono block mb-1">Identifier</label>
+                  <label className="text-[#4B506C] font-mono font-bold block mb-1">Identifier</label>
                   <input
                     type="text"
                     required
                     value={formData.identifier}
                     onChange={e => setFormData({ ...formData, identifier: e.target.value })}
                     placeholder="llama-3.3-70b"
-                    className="w-full p-2 rounded-lg bg-slate-950 border border-slate-800 text-slate-200 focus:outline-none focus:border-cyan-500"
+                    className="w-full p-2.5 rounded-lg bg-[#FCFBFF] border border-[#E1D9F0] text-[#121334] focus:outline-none focus:border-[#5B4EB1]"
                   />
                 </div>
                 <div>
-                  <label className="text-slate-400 font-mono block mb-1">Provider</label>
+                  <label className="text-[#4B506C] font-mono font-bold block mb-1">Provider</label>
                   <select
                     value={formData.provider}
                     onChange={e => setFormData({ ...formData, provider: e.target.value })}
-                    className="w-full p-2 rounded-lg bg-slate-950 border border-slate-800 text-slate-200 focus:outline-none focus:border-cyan-500"
+                    className="w-full p-2.5 rounded-lg bg-[#FCFBFF] border border-[#E1D9F0] text-[#121334] focus:outline-none focus:border-[#5B4EB1]"
                   >
                     <option value="ollama">Ollama</option>
                     <option value="vllm">vLLM</option>
@@ -267,14 +258,14 @@ export const ModelRegistry: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-slate-400 font-mono block mb-1">Local Host Endpoint</label>
+                <label className="text-[#4B506C] font-mono font-bold block mb-1">Local Host Endpoint</label>
                 <input
                   type="text"
                   required
                   value={formData.endpoint}
                   onChange={e => setFormData({ ...formData, endpoint: e.target.value })}
                   placeholder="http://127.0.0.1:11434"
-                  className="w-full p-2 rounded-lg bg-slate-950 border border-slate-800 text-slate-200 focus:outline-none focus:border-cyan-500"
+                  className="w-full p-2.5 rounded-lg bg-[#FCFBFF] border border-[#E1D9F0] text-[#121334] focus:outline-none focus:border-[#5B4EB1]"
                 />
               </div>
 
@@ -282,13 +273,13 @@ export const ModelRegistry: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono font-semibold"
+                  className="px-4 py-2 rounded-xl bg-[#ECE1F3] hover:bg-[#E9D1F1] text-[#121334] font-mono font-bold"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-mono font-semibold shadow-md"
+                  className="px-4 py-2 rounded-xl bg-[#5B4EB1] hover:bg-[#4F46E5] text-white font-mono font-bold shadow-sm"
                 >
                   Save Model
                 </button>
