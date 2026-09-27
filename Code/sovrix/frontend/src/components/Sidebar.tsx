@@ -73,50 +73,56 @@ export const Sidebar: React.FC<SidebarProps> = ({
       >
         {/* Brand Header */}
         <div className="p-3.5 border-b border-[#E1D9F0] flex items-center justify-between bg-[#FFFFFF] min-h-[64px]">
-          <div className="flex items-center gap-2.5 overflow-hidden">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#5B4EB1] to-[#7C6FCD] flex items-center justify-center shadow-md shadow-[#5B4EB1]/20 border border-[#E9D1F1] shrink-0">
-              <Lock className="w-4 h-4 text-white" />
-            </div>
-            {(!isCollapsed || mobileOpen) && (
-              <div className="min-w-0 transition-opacity duration-200">
-                <div className="flex items-center gap-2">
-                  <span className="font-extrabold text-base tracking-wider text-[#121334] font-mono leading-none">
-                    SOVRIX
-                  </span>
-                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#ECE1F3] text-[#5B4EB1] font-bold font-mono uppercase tracking-wider">
-                    v1.0
+          {(!isCollapsed || mobileOpen) ? (
+            <>
+              <div className="flex items-center gap-2.5 overflow-hidden">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#5B4EB1] to-[#7C6FCD] flex items-center justify-center shadow-md shadow-[#5B4EB1]/20 border border-[#E9D1F1] shrink-0">
+                  <Lock className="w-4 h-4 text-white" />
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="font-extrabold text-base tracking-wider text-[#121334] font-mono leading-none">
+                      SOVRIX
+                    </span>
+                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#ECE1F3] text-[#5B4EB1] font-bold font-mono uppercase tracking-wider">
+                      v1.0
+                    </span>
+                  </div>
+                  <span className="text-[10px] block text-[#5B4EB1] font-bold tracking-widest uppercase mt-0.5">
+                    Air-Gapped AI
                   </span>
                 </div>
-                <span className="text-[10px] block text-[#5B4EB1] font-bold tracking-widest uppercase mt-0.5">
-                  Air-Gapped AI
-                </span>
               </div>
-            )}
-          </div>
 
-          {/* Toggle Button for Desktop & Close Button for Mobile */}
-          <div className="flex items-center">
-            {/* Desktop Collapse Toggle */}
-            <button
-              onClick={() => setIsCollapsed(prev => !prev)}
-              title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
-              className="hidden lg:flex items-center justify-center w-8 h-8 rounded-lg hover:bg-[#ECE1F3] text-[#4B506C] hover:text-[#121334] transition-colors"
-            >
-              {isCollapsed ? (
-                <PanelLeftOpen className="w-4 h-4 text-[#5B4EB1]" />
-              ) : (
+              {/* Desktop Collapse Toggle */}
+              <button
+                onClick={() => setIsCollapsed(prev => !prev)}
+                title="Collapse Sidebar"
+                className="hidden lg:flex items-center justify-center w-8 h-8 rounded-lg hover:bg-[#ECE1F3] text-[#4B506C] hover:text-[#121334] transition-colors"
+              >
                 <PanelLeftClose className="w-4 h-4 text-[#4B506C]" />
-              )}
-            </button>
+              </button>
 
-            {/* Mobile Close Button */}
-            <button
-              onClick={() => setMobileOpen(false)}
-              className="flex lg:hidden items-center justify-center w-8 h-8 rounded-lg hover:bg-[#ECE1F3] text-[#4B506C]"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
+              {/* Mobile Close Button */}
+              <button
+                onClick={() => setMobileOpen(false)}
+                className="flex lg:hidden items-center justify-center w-8 h-8 rounded-lg hover:bg-[#ECE1F3] text-[#4B506C]"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </>
+          ) : (
+            /* When Closed / Collapsed: Clean single centered Expand button with no clipped lock icon */
+            <div className="w-full flex items-center justify-center">
+              <button
+                onClick={() => setIsCollapsed(false)}
+                title="Expand Sidebar"
+                className="w-10 h-10 rounded-xl bg-[#ECE1F3] hover:bg-[#E9D1F1] border border-[#E1D9F0] text-[#5B4EB1] flex items-center justify-center shadow-sm transition-all hover:scale-105"
+              >
+                <PanelLeftOpen className="w-5 h-5 text-[#5B4EB1]" />
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Air-Gap Status Mini Pill (Hidden when collapsed) */}
@@ -144,7 +150,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="px-2 pt-3 flex justify-center">
             <div 
               title="Air-Gap Enforced: Zero External Egress" 
-              className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center shadow-sm cursor-pointer"
+              className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center shadow-sm"
             >
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse"></span>
             </div>
@@ -169,9 +175,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 onClick={() => setMobileOpen(false)}
                 title={isCollapsed && !mobileOpen ? item.name : undefined}
                 className={({ isActive }) =>
-                  `flex items-center rounded-xl text-xs font-medium transition-all group ${
+                  `relative flex items-center rounded-xl text-xs font-medium transition-all group ${
                     isCollapsed && !mobileOpen
-                      ? 'justify-center p-2.5'
+                      ? 'justify-center p-3'
                       : 'justify-between px-3 py-2.5'
                   } ${
                     isActive
@@ -193,11 +199,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <span className={`text-[10px] px-2 py-0.5 rounded-full font-mono font-bold whitespace-nowrap shrink-0 ml-1 border border-[#E1D9F0] ${item.badgeColor || 'bg-[#ECE1F3] text-[#5B4EB1]'}`}>
                     {item.badge}
                   </span>
-                )}
-
-                {/* Dot indicator when collapsed */}
-                {isCollapsed && !mobileOpen && item.badge && (
-                  <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#5B4EB1]"></span>
                 )}
               </NavLink>
             );
