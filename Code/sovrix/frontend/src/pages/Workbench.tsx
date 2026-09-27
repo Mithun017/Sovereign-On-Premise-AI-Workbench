@@ -168,141 +168,182 @@ export const Workbench: React.FC = () => {
     );
   };
 
+  const [showContextPanel, setShowContextPanel] = useState(true);
+  const [showDeliverablesPanel, setShowDeliverablesPanel] = useState(true);
+
   return (
-    <div className="flex h-[calc(100vh-4rem)] overflow-hidden font-sans">
+    <div className="flex h-[calc(100vh-4rem)] overflow-hidden font-sans relative">
       {/* LEFT REGION: Context, Documents & Attachments */}
-      <div className="w-80 border-r border-[#E1D9F0] bg-[#FCFBFF] flex flex-col justify-between shrink-0 p-4 space-y-4 overflow-y-auto">
-        <div className="space-y-4">
-          <div className="flex items-center justify-between pb-2 border-b border-[#E1D9F0]">
-            <span className="text-xs font-bold text-[#121334] font-mono uppercase flex items-center gap-1.5">
-              <FileText className="w-3.5 h-3.5 text-[#5B4EB1]" />
-              <span>Input Context Docs</span>
-            </span>
-            <span className="text-[10px] font-mono text-[#5B4EB1] bg-[#ECE1F3] px-2 py-0.5 rounded font-bold border border-[#E1D9F0]">
-              {documents.length} Files
-            </span>
+      {showContextPanel && (
+        <div className="w-80 border-r border-[#E1D9F0] bg-[#FCFBFF] flex flex-col justify-between shrink-0 p-4 space-y-4 overflow-y-auto custom-scrollbar transition-all duration-300">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b border-[#E1D9F0]">
+              <span className="text-xs font-bold text-[#121334] font-mono uppercase flex items-center gap-1.5">
+                <FileText className="w-3.5 h-3.5 text-[#5B4EB1]" />
+                <span>Input Context Docs</span>
+              </span>
+              <span className="text-[10px] font-mono text-[#5B4EB1] bg-[#ECE1F3] px-2 py-0.5 rounded font-bold border border-[#E1D9F0]">
+                {documents.length} Files
+              </span>
+            </div>
+
+            <div className="space-y-2">
+              {documents.map(doc => {
+                const isSelected = selectedDocIds.includes(doc.id);
+                return (
+                  <div
+                    key={doc.id}
+                    onClick={() => toggleDocSelection(doc.id)}
+                    className={`p-3 rounded-xl border text-xs cursor-pointer transition-all ${
+                      isSelected
+                        ? 'bg-[#E9D1F1] border-[#5B4EB1] text-[#121334] font-semibold shadow-sm'
+                        : 'bg-[#FFFFFF] border-[#E1D9F0] text-[#1A1B3B] hover:border-[#8F92C0]'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-bold truncate text-xs">{doc.original_name}</span>
+                      <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-[#ECE1F3] text-[#4B506C] shrink-0">
+                        {doc.file_type}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-[10px] text-[#4B506C] font-mono mt-1.5">
+                      <span className="truncate">{doc.department}</span>
+                      <span className={doc.ocr_processed ? 'text-emerald-700 font-bold shrink-0' : 'text-[#8F92C0] shrink-0'}>
+                        {doc.ocr_processed ? '✓ OCR' : 'Raw'}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
-          <div className="space-y-2">
-            {documents.map(doc => {
-              const isSelected = selectedDocIds.includes(doc.id);
-              return (
-                <div
-                  key={doc.id}
-                  onClick={() => toggleDocSelection(doc.id)}
-                  className={`p-3 rounded-xl border text-xs cursor-pointer transition-all ${
-                    isSelected
-                      ? 'bg-[#E9D1F1] border-[#5B4EB1] text-[#121334] font-semibold shadow-sm'
-                      : 'bg-[#FFFFFF] border-[#E1D9F0] text-[#1A1B3B] hover:border-[#8F92C0]'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold truncate">{doc.original_name}</span>
-                    <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-[#ECE1F3] text-[#4B506C]">
-                      {doc.file_type}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between text-[10px] text-[#4B506C] font-mono mt-1.5">
-                    <span>{doc.department}</span>
-                    <span className={doc.ocr_processed ? 'text-emerald-700 font-bold' : 'text-[#8F92C0]'}>
-                      {doc.ocr_processed ? '✓ OCR Verified' : 'Raw'}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
+          {/* Model Selector in Left Panel */}
+          <div className="pt-4 border-t border-[#E1D9F0] space-y-2">
+            <label className="text-xs font-bold text-[#121334] font-mono uppercase block">
+              Target Model Adapter
+            </label>
+            <select
+              value={selectedModelOverride}
+              onChange={(e) => setSelectedModelOverride(e.target.value)}
+              className="w-full bg-[#FFFFFF] border border-[#E1D9F0] rounded-lg p-2 text-xs text-[#121334] font-mono font-medium focus:border-[#5B4EB1] focus:outline-none shadow-sm"
+            >
+              <option value="">Auto Router (Intelligent Selection)</option>
+              {models.map(m => (
+                <option key={m.id} value={m.identifier}>
+                  {m.name} ({m.provider})
+                </option>
+              ))}
+            </select>
+            <span className="text-[10px] text-[#8F92C0] block">
+              Directs query to optimal GPU model automatically.
+            </span>
           </div>
         </div>
-
-        {/* Model Selector in Left Panel */}
-        <div className="pt-4 border-t border-[#E1D9F0] space-y-2">
-          <label className="text-xs font-bold text-[#121334] font-mono uppercase block">
-            Target Model Adapter
-          </label>
-          <select
-            value={selectedModelOverride}
-            onChange={(e) => setSelectedModelOverride(e.target.value)}
-            className="w-full bg-[#FFFFFF] border border-[#E1D9F0] rounded-lg p-2 text-xs text-[#121334] font-mono font-medium focus:border-[#5B4EB1] focus:outline-none shadow-sm"
-          >
-            <option value="">Auto Router (Intelligent Selection)</option>
-            {models.map(m => (
-              <option key={m.id} value={m.identifier}>
-                {m.name} ({m.provider})
-              </option>
-            ))}
-          </select>
-          <span className="text-[10px] text-[#8F92C0] block">
-            Router classifies query and directs to optimal GPU model automatically.
-          </span>
-        </div>
-      </div>
+      )}
 
       {/* CENTER REGION: Conversation Stream & Live Step Visualization */}
-      <div className="flex-1 flex flex-col bg-[#EFEDF5] overflow-hidden">
+      <div className="flex-1 flex flex-col bg-[#EFEDF5] overflow-hidden min-w-0">
+        {/* Top Control Bar for Panes */}
+        <div className="px-4 py-2 bg-[#FCFBFF] border-b border-[#E1D9F0] flex items-center justify-between text-xs font-mono text-[#4B506C]">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowContextPanel(prev => !prev)}
+              className={`px-2.5 py-1 rounded-lg border text-[11px] font-semibold transition-all ${
+                showContextPanel 
+                  ? 'bg-[#E9D1F1] border-[#5B4EB1] text-[#121334]' 
+                  : 'bg-[#FFFFFF] border-[#E1D9F0] text-[#4B506C] hover:text-[#121334]'
+              }`}
+            >
+              {showContextPanel ? '◀ Hide Context' : '▶ Show Context'}
+            </button>
+            <span className="text-[#8F92C0] hidden sm:inline">|</span>
+            <span className="hidden sm:inline font-bold text-[#121334]">
+              Autonomous Reasoning Session
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">
+              ● Sandbox Ready
+            </span>
+            <button
+              onClick={() => setShowDeliverablesPanel(prev => !prev)}
+              className={`px-2.5 py-1 rounded-lg border text-[11px] font-semibold transition-all ${
+                showDeliverablesPanel 
+                  ? 'bg-[#E9D1F1] border-[#5B4EB1] text-[#121334]' 
+                  : 'bg-[#FFFFFF] border-[#E1D9F0] text-[#4B506C] hover:text-[#121334]'
+              }`}
+            >
+              {showDeliverablesPanel ? 'Hide Output ▶' : 'Show Output ◀'}
+            </button>
+          </div>
+        </div>
+
         {/* Messages Scroll Area */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 custom-scrollbar">
           {messages.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center text-center max-w-lg mx-auto space-y-4 select-none">
-              <div className="w-16 h-16 rounded-2xl bg-[#E9D1F1] border border-[#E1D9F0] flex items-center justify-center shadow-lg">
+            <div className="h-full flex flex-col items-center justify-center text-center max-w-xl mx-auto space-y-5 select-none py-8">
+              <div className="w-16 h-16 rounded-2xl bg-[#E9D1F1] border border-[#E1D9F0] flex items-center justify-center shadow-md">
                 <Bot className="w-8 h-8 text-[#5B4EB1]" />
               </div>
-              <div className="space-y-1">
-                <h3 className="text-lg font-bold text-[#121334]">SOVRIX Autonomous Workbench</h3>
-                <p className="text-xs text-[#4B506C]">
-                  Ready for confidential engineering planning, OCR analysis, math verification, sandboxed code execution, and deliverable creation.
+              <div className="space-y-1.5 px-4">
+                <h3 className="text-lg font-bold text-[#121334] font-mono">SOVRIX Autonomous Workbench</h3>
+                <p className="text-xs text-[#4B506C] leading-relaxed">
+                  Confidential engineering planning, local OCR extraction, verified calculations, sandboxed Python code execution, and executive deliverable generation.
                 </p>
               </div>
 
               {/* Quick Launch Buttons */}
-              <div className="flex flex-wrap gap-2 justify-center pt-2">
+              <div className="flex flex-wrap gap-2.5 justify-center pt-2 px-2">
                 <button
                   onClick={() => triggerScenario(1)}
-                  className="px-3 py-1.5 rounded-lg bg-[#FFFFFF] hover:bg-[#E9D1F1] border border-[#E1D9F0] text-xs font-mono text-[#121334] font-semibold transition-all shadow-sm"
+                  className="px-3.5 py-2 rounded-xl bg-[#FFFFFF] hover:bg-[#E9D1F1] border border-[#E1D9F0] text-xs font-mono text-[#121334] font-semibold transition-all shadow-sm flex items-center gap-1.5"
                 >
-                  ⚡ Run Inspection & MAWT Scenario
+                  <span>⚡ 1: Inspection & MAWT (DOCX)</span>
                 </button>
                 <button
                   onClick={() => triggerScenario(2)}
-                  className="px-3 py-1.5 rounded-lg bg-[#FFFFFF] hover:bg-[#E9D1F1] border border-[#E1D9F0] text-xs font-mono text-[#121334] font-semibold transition-all shadow-sm"
+                  className="px-3.5 py-2 rounded-xl bg-[#FFFFFF] hover:bg-[#E9D1F1] border border-[#E1D9F0] text-xs font-mono text-[#121334] font-semibold transition-all shadow-sm flex items-center gap-1.5"
                 >
-                  ⚡ Run Downtime Code Sandbox
+                  <span>⚡ 2: Downtime Sandbox (XLSX)</span>
                 </button>
                 <button
                   onClick={() => triggerScenario(3)}
-                  className="px-3 py-1.5 rounded-lg bg-[#FFFFFF] hover:bg-[#E9D1F1] border border-[#E1D9F0] text-xs font-mono text-[#121334] font-semibold transition-all shadow-sm"
+                  className="px-3.5 py-2 rounded-xl bg-[#FFFFFF] hover:bg-[#E9D1F1] border border-[#E1D9F0] text-xs font-mono text-[#121334] font-semibold transition-all shadow-sm flex items-center gap-1.5"
                 >
-                  ⚡ Run P&ID Vision Analysis
+                  <span>⚡ 3: P&ID Vision Analysis (PPTX)</span>
                 </button>
               </div>
             </div>
           ) : (
             messages.map((msg) => (
-              <div key={msg.id} className="space-y-4">
-                <div className={`flex gap-3.5 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+              <div key={msg.id} className="space-y-4 max-w-4xl mx-auto">
+                <div className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   {msg.role === 'assistant' && (
-                    <div className="w-8 h-8 rounded-lg bg-[#E9D1F1] border border-[#E1D9F0] flex items-center justify-center shrink-0">
+                    <div className="w-8 h-8 rounded-xl bg-[#E9D1F1] border border-[#E1D9F0] flex items-center justify-center shrink-0 shadow-sm mt-0.5">
                       <Bot className="w-4 h-4 text-[#5B4EB1]" />
                     </div>
                   )}
 
-                  <div className={`max-w-3xl rounded-xl p-4 shadow-sm text-xs leading-relaxed space-y-3 ${
+                  <div className={`max-w-[85%] rounded-2xl p-4 shadow-sm text-xs leading-relaxed space-y-3 ${
                     msg.role === 'user'
                       ? 'bg-[#E9D1F1] border border-[#E1D9F0] text-[#121334] font-medium'
                       : 'bg-[#FFFFFF] border border-[#E1D9F0] text-[#1A1B3B]'
                   }`}>
-                    <div className="whitespace-pre-wrap font-sans text-sm">{msg.content}</div>
+                    <div className="whitespace-pre-wrap font-sans text-sm leading-relaxed">{msg.content}</div>
 
                     {/* Grounded Citations if attached */}
                     {msg.metadata?.citations && msg.metadata.citations.length > 0 && (
                       <div className="pt-2 border-t border-[#E1D9F0] space-y-1.5">
                         <span className="text-[10px] font-mono uppercase text-[#5B4EB1] font-bold block">
-                          Verified Knowledge Citations:
+                          Verified Citations & Grounding:
                         </span>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           {msg.metadata.citations.map((c: any, i: number) => (
-                            <div key={i} className="p-2 rounded bg-[#ECE1F3] border border-[#E1D9F0] font-mono text-[11px] text-[#121334]">
-                              <span className="font-bold">{c.citation}</span>
-                              <span className="text-[#4B506C] block text-[10px] truncate">{c.doc}</span>
+                            <div key={i} className="p-2 rounded-lg bg-[#ECE1F3] border border-[#E1D9F0] font-mono text-[11px] text-[#121334]">
+                              <span className="font-bold block">{c.citation}</span>
+                              <span className="text-[#4B506C] block text-[10px] truncate mt-0.5">{c.doc}</span>
                             </div>
                           ))}
                         </div>
@@ -311,7 +352,7 @@ export const Workbench: React.FC = () => {
                   </div>
 
                   {msg.role === 'user' && (
-                    <div className="w-8 h-8 rounded-lg bg-[#ECE1F3] border border-[#E1D9F0] flex items-center justify-center shrink-0">
+                    <div className="w-8 h-8 rounded-xl bg-[#ECE1F3] border border-[#E1D9F0] flex items-center justify-center shrink-0 shadow-sm mt-0.5">
                       <User className="w-4 h-4 text-[#5B4EB1]" />
                     </div>
                   )}
@@ -319,7 +360,7 @@ export const Workbench: React.FC = () => {
 
                 {/* Live Agent Step Timeline if present */}
                 {msg.metadata?.agent_run?.steps && (
-                  <div className="pl-11 pr-4">
+                  <div className="pl-10 pr-2 sm:pr-4">
                     <AgentStepTimeline
                       steps={msg.metadata.agent_run.steps}
                       taskClassification={msg.metadata.agent_run.task_classification}
@@ -335,8 +376,8 @@ export const Workbench: React.FC = () => {
         </div>
 
         {/* BOTTOM: Prompt Input Bar */}
-        <form onSubmit={handleSendMessage} className="p-4 bg-[#FCFBFF] border-t border-[#E1D9F0]">
-          <div className="flex items-center gap-2 p-2 rounded-xl bg-[#FFFFFF] border border-[#E1D9F0] focus-within:border-[#5B4EB1] transition-all shadow-sm">
+        <form onSubmit={handleSendMessage} className="p-3 sm:p-4 bg-[#FCFBFF] border-t border-[#E1D9F0]">
+          <div className="max-w-4xl mx-auto flex items-center gap-2 p-2 rounded-2xl bg-[#FFFFFF] border border-[#E1D9F0] focus-within:border-[#5B4EB1] transition-all shadow-sm">
             <textarea
               rows={2}
               value={inputPrompt}
@@ -355,7 +396,7 @@ export const Workbench: React.FC = () => {
               <button
                 type="submit"
                 disabled={isLoading || !inputPrompt.trim()}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#5B4EB1] hover:bg-[#4F46E5] disabled:opacity-40 text-white font-bold text-xs shadow-sm transition-all font-mono"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#5B4EB1] hover:bg-[#4F46E5] disabled:opacity-40 text-white font-bold text-xs shadow-sm transition-all font-mono"
               >
                 <span>{isLoading ? 'Executing...' : 'Run Agent'}</span>
                 <Send className="w-3.5 h-3.5" />
@@ -366,63 +407,66 @@ export const Workbench: React.FC = () => {
       </div>
 
       {/* RIGHT REGION: Execution Metadata, Deliverables & Verified Calculations */}
-      <div className="w-96 border-l border-[#E1D9F0] bg-[#FCFBFF] flex flex-col justify-between shrink-0 p-4 space-y-4 overflow-y-auto">
-        <div className="space-y-4">
-          <div className="flex items-center justify-between pb-2 border-b border-[#E1D9F0]">
-            <span className="text-xs font-bold text-[#121334] font-mono uppercase flex items-center gap-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
-              <span>Deliverables Generated</span>
-            </span>
-            <span className="text-[10px] font-mono text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded font-bold border border-emerald-200">
-              {deliverables.length} Real Files
-            </span>
+      {showDeliverablesPanel && (
+        <div className="w-96 border-l border-[#E1D9F0] bg-[#FCFBFF] flex flex-col justify-between shrink-0 p-4 space-y-4 overflow-y-auto custom-scrollbar transition-all duration-300">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b border-[#E1D9F0]">
+              <span className="text-xs font-bold text-[#121334] font-mono uppercase flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
+                <span>Deliverables Generated</span>
+              </span>
+              <span className="text-[10px] font-mono text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded font-bold border border-emerald-200">
+                {deliverables.length} Files
+              </span>
+            </div>
+
+            {/* Generated Deliverables List */}
+            <div className="space-y-3">
+              {deliverables.length === 0 ? (
+                <div className="text-center py-6 text-xs text-[#8F92C0] font-mono">
+                  No deliverables generated yet. Run Scenario 1, 2, or 3 to generate real Word, Excel, or PPTX.
+                </div>
+              ) : (
+                deliverables.slice(0, 3).map(deliv => (
+                  <DeliverableCard key={deliv.id} deliverable={deliv} />
+                ))
+              )}
+            </div>
+
+            {/* Deterministic Calculation Card */}
+            <div className="pt-2">
+              <CalculationVisualizer
+                calc={{
+                  inputs: { mawt: 4.50, measured: 3.42 },
+                  formula: "Deficit = MAWT - Measured",
+                  steps: [
+                    { step_number: 1, description: "Nominal Wall: 9.52 mm (ASTM A106-B)", intermediate_value: 9.52, formula_used: "Nominal" },
+                    { step_number: 2, description: "Statutory MAWT Limit (SOP-INS-2025)", intermediate_value: 4.50, formula_used: "MAWT := 4.50" },
+                    { step_number: 3, description: "Ultrasonic Minimum Measured Point", intermediate_value: 3.42, formula_used: "Measured := 3.42" },
+                    { step_number: 4, description: "Compute Absolute Deficit: 4.50 - 3.42", intermediate_value: 1.08, formula_used: "4.50 - 3.42" }
+                  ],
+                  final_result: 1.08,
+                  units: "mm",
+                  is_verified: true,
+                  explanation: "Deficit is 1.08 mm (24.0% below statutory retirement limit)."
+                }}
+              />
+            </div>
           </div>
 
-          {/* Generated Deliverables List */}
-          <div className="space-y-3">
-            {deliverables.length === 0 ? (
-              <div className="text-center py-6 text-xs text-[#8F92C0] font-mono">
-                No deliverables generated yet. Run Scenario 1, 2, or 3 to generate real Word, Excel, or PPTX.
-              </div>
-            ) : (
-              deliverables.slice(0, 3).map(deliv => (
-                <DeliverableCard key={deliv.id} deliverable={deliv} />
-              ))
-            )}
-          </div>
-
-          {/* Deterministic Calculation Card */}
-          <div className="pt-2">
-            <CalculationVisualizer
-              calc={{
-                inputs: { mawt: 4.50, measured: 3.42 },
-                formula: "Deficit = MAWT - Measured",
-                steps: [
-                  { step_number: 1, description: "Nominal Wall: 9.52 mm (ASTM A106-B)", intermediate_value: 9.52, formula_used: "Nominal" },
-                  { step_number: 2, description: "Statutory MAWT Limit (SOP-INS-2025)", intermediate_value: 4.50, formula_used: "MAWT := 4.50" },
-                  { step_number: 3, description: "Ultrasonic Minimum Measured Point", intermediate_value: 3.42, formula_used: "Measured := 3.42" },
-                  { step_number: 4, description: "Compute Absolute Deficit: 4.50 - 3.42", intermediate_value: 1.08, formula_used: "4.50 - 3.42" }
-                ],
-                final_result: 1.08,
-                units: "mm",
-                is_verified: true,
-                explanation: "Deficit is 1.08 mm (24.0% below statutory retirement limit)."
-              }}
-            />
+          {/* Security / Sovereignty Assurance Badge */}
+          <div className="p-3.5 rounded-xl bg-[#FFFFFF] border border-[#E1D9F0] space-y-1.5 font-mono text-[11px] shadow-sm">
+            <div className="flex items-center justify-between text-[#121334] font-bold">
+              <span>Air-Gap Sentinel</span>
+              <span className="text-emerald-700">PASSED</span>
+            </div>
+            <div className="text-[#8F92C0] text-[10px]">
+              Network egress blocked via iptables / loopback VLAN isolation.
+            </div>
           </div>
         </div>
-
-        {/* Security / Sovereignty Assurance Badge */}
-        <div className="p-3.5 rounded-xl bg-[#FFFFFF] border border-[#E1D9F0] space-y-1.5 font-mono text-[11px] shadow-sm">
-          <div className="flex items-center justify-between text-[#121334] font-bold">
-            <span>Air-Gap Sentinel</span>
-            <span className="text-emerald-700">PASSED</span>
-          </div>
-          <div className="text-[#8F92C0] text-[10px]">
-            Network egress blocked via iptables / loopback VLAN isolation.
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 };
+

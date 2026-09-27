@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
@@ -15,16 +15,27 @@ import { SystemStatus } from './pages/SystemStatus';
 import { Administration } from './pages/Administration';
 
 export const App: React.FC = () => {
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
+
   return (
     <Router>
-      <div className="flex h-screen w-screen overflow-hidden bg-[#EFEDF5] text-[#1A1B3B] antialiased">
-        {/* Persistent Left Sidebar */}
-        <Sidebar />
+      <div className="flex h-screen w-screen overflow-hidden bg-[#EFEDF5] text-[#1A1B3B] antialiased selection:bg-[#E9D1F1] selection:text-[#121334]">
+        {/* Persistent Collapsible Left Sidebar */}
+        <Sidebar
+          isCollapsed={isSidebarCollapsed}
+          setIsCollapsed={setIsSidebarCollapsed}
+          mobileOpen={isMobileSidebarOpen}
+          setMobileOpen={setIsMobileSidebarOpen}
+        />
 
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-          <Header />
-          <main className="flex-1 overflow-y-auto bg-[#EFEDF5]">
+          <Header
+            onToggleSidebar={() => setIsSidebarCollapsed(prev => !prev)}
+            onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)}
+          />
+          <main className="flex-1 overflow-y-auto bg-[#EFEDF5] custom-scrollbar">
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/dashboard" element={<Dashboard />} />
@@ -48,3 +59,4 @@ export const App: React.FC = () => {
 };
 
 export default App;
+

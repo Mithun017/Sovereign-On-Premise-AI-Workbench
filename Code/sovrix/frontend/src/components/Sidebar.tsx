@@ -12,7 +12,10 @@ import {
   Settings, 
   Activity,
   HardDrive,
-  Lock
+  Lock,
+  PanelLeftClose,
+  PanelLeftOpen,
+  X
 } from 'lucide-react';
 
 interface NavItem {
@@ -20,103 +23,216 @@ interface NavItem {
   path: string;
   icon: React.ComponentType<{ className?: string }>;
   badge?: string;
+  badgeColor?: string;
 }
 
 const mainNavigation: NavItem[] = [
   { name: 'Dashboard', path: '/', icon: LayoutDashboard },
-  { name: 'AI Workbench', path: '/workbench', icon: Bot, badge: 'Agentic' },
+  { name: 'AI Workbench', path: '/workbench', icon: Bot, badge: 'Agentic', badgeColor: 'bg-[#ECE1F3] text-[#5B4EB1]' },
   { name: 'Documents & OCR', path: '/documents', icon: FileText },
   { name: 'Knowledge Base', path: '/knowledge', icon: BookOpen },
-  { name: 'Code Lab (Sandbox)', path: '/code-lab', icon: Terminal, badge: 'Isolated' },
+  { name: 'Code Lab (Sandbox)', path: '/code-lab', icon: Terminal, badge: 'Isolated', badgeColor: 'bg-purple-100 text-purple-700' },
   { name: 'Deliverables Factory', path: '/deliverables', icon: FileSpreadsheet },
   { name: 'Model Registry', path: '/models', icon: Cpu },
-  { name: 'Sovereignty Monitor', path: '/sovereignty', icon: ShieldAlert, badge: 'Zero Egress' },
+  { name: 'Sovereignty Monitor', path: '/sovereignty', icon: ShieldAlert, badge: 'Zero Egress', badgeColor: 'bg-emerald-100 text-emerald-800' },
   { name: 'Administration & Audit', path: '/admin', icon: Settings },
   { name: 'System Status', path: '/status', icon: Activity },
 ];
 
-export const Sidebar: React.FC = () => {
+interface SidebarProps {
+  isCollapsed: boolean;
+  setIsCollapsed: (collapsed: boolean | ((prev: boolean) => boolean)) => void;
+  mobileOpen: boolean;
+  setMobileOpen: (open: boolean) => void;
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({
+  isCollapsed,
+  setIsCollapsed,
+  mobileOpen,
+  setMobileOpen,
+}) => {
   return (
-    <aside className="w-64 bg-[#FCFBFF] border-r border-[#E1D9F0] flex flex-col h-screen select-none shrink-0 sticky top-0 z-30 shadow-sm">
-      {/* Brand Header */}
-      <div className="p-4 border-b border-[#E1D9F0] flex flex-col gap-1 bg-[#FFFFFF]">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#5B4EB1] to-[#7C6FCD] flex items-center justify-center shadow-md shadow-[#5B4EB1]/20 border border-[#E9D1F1]">
-            <Lock className="w-4 h-4 text-white" />
-          </div>
-          <div>
-            <span className="font-extrabold text-lg tracking-wider text-[#121334] font-mono">SOVRIX</span>
-            <span className="text-[10px] block text-[#5B4EB1] font-semibold tracking-widest uppercase">Air-Gapped AI</span>
-          </div>
-        </div>
-        <p className="text-[11px] text-[#4B506C] mt-1 line-clamp-1">Sovereign On-Premise AI Workbench</p>
-      </div>
+    <>
+      {/* Mobile Backdrop Overlay */}
+      {mobileOpen && (
+        <div
+          onClick={() => setMobileOpen(false)}
+          className="fixed inset-0 bg-[#121334]/30 backdrop-blur-sm z-40 lg:hidden transition-opacity duration-300"
+        />
+      )}
 
-      {/* Air-Gap Status Mini Pill */}
-      <div className="px-3 pt-3">
-        <div className="p-2.5 rounded-lg bg-[#ECE1F3] border border-[#E1D9F0] flex flex-col gap-1">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-mono font-bold text-[#4B506C] uppercase">Network Boundary</span>
-            <span className="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span>
-          </div>
-          <div className="flex items-center gap-1.5 text-emerald-800 text-xs font-mono font-bold">
-            <span>SECURE LOCAL ONLY</span>
-          </div>
-          <div className="text-[10px] text-[#8F92C0] font-mono">Ext. API Calls: 0 (Enforced)</div>
-        </div>
-      </div>
-
-      {/* Navigation Links */}
-      <nav className="flex-1 px-3 py-3 space-y-1 overflow-y-auto">
-        <div className="px-2 py-1 text-[10px] font-mono font-bold text-[#8F92C0] tracking-wider uppercase">
-          Workspace Navigation
-        </div>
-        {mainNavigation.map((item) => {
-          const Icon = item.icon;
-          return (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              end={item.path === '/'}
-              className={({ isActive }) =>
-                `flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-all group ${
-                  isActive
-                    ? 'bg-[#E9D1F1] text-[#121334] border border-[#E1D9F0] font-bold shadow-sm'
-                    : 'text-[#4B506C] hover:text-[#121334] hover:bg-[#ECE1F3] border border-transparent'
-                }`
-              }
-            >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <Icon className="w-4 h-4 shrink-0 text-[#5B4EB1] transition-transform group-hover:scale-110" />
-                <span className="truncate">{item.name}</span>
-              </div>
-              {item.badge && (
-                <span className="text-[9px] px-1.5 py-0.5 rounded font-mono font-bold bg-[#ECE1F3] text-[#5B4EB1] border border-[#E1D9F0]">
-                  {item.badge}
+      {/* Main Sidebar Container */}
+      <aside
+        className={`
+          fixed lg:static top-0 left-0 h-screen z-40 bg-[#FCFBFF] border-r border-[#E1D9F0]
+          flex flex-col select-none transition-all duration-300 ease-in-out shadow-sm
+          ${isCollapsed ? 'lg:w-[76px]' : 'lg:w-72'}
+          ${mobileOpen ? 'translate-x-0 w-72' : '-translate-x-full lg:translate-x-0'}
+        `}
+      >
+        {/* Brand Header */}
+        <div className="p-3.5 border-b border-[#E1D9F0] flex items-center justify-between bg-[#FFFFFF] min-h-[64px]">
+          <div className="flex items-center gap-2.5 overflow-hidden">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#5B4EB1] to-[#7C6FCD] flex items-center justify-center shadow-md shadow-[#5B4EB1]/20 border border-[#E9D1F1] shrink-0">
+              <Lock className="w-4 h-4 text-white" />
+            </div>
+            {(!isCollapsed || mobileOpen) && (
+              <div className="min-w-0 transition-opacity duration-200">
+                <div className="flex items-center gap-2">
+                  <span className="font-extrabold text-base tracking-wider text-[#121334] font-mono leading-none">
+                    SOVRIX
+                  </span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#ECE1F3] text-[#5B4EB1] font-bold font-mono uppercase tracking-wider">
+                    v1.0
+                  </span>
+                </div>
+                <span className="text-[10px] block text-[#5B4EB1] font-bold tracking-widest uppercase mt-0.5">
+                  Air-Gapped AI
                 </span>
-              )}
-            </NavLink>
-          );
-        })}
-      </nav>
+              </div>
+            )}
+          </div>
 
-      {/* System Telemetry Compact Footer */}
-      <div className="p-3 border-t border-[#E1D9F0] bg-[#FCFBFF]">
-        <div className="flex items-center justify-between text-[11px] text-[#4B506C] font-mono mb-1">
-          <span className="flex items-center gap-1">
-            <HardDrive className="w-3.5 h-3.5 text-[#5B4EB1]" />
-            <span>VRAM</span>
-          </span>
-          <span className="text-[#121334] font-semibold">14.2 / 48 GB</span>
+          {/* Toggle Button for Desktop & Close Button for Mobile */}
+          <div className="flex items-center">
+            {/* Desktop Collapse Toggle */}
+            <button
+              onClick={() => setIsCollapsed(prev => !prev)}
+              title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+              className="hidden lg:flex items-center justify-center w-8 h-8 rounded-lg hover:bg-[#ECE1F3] text-[#4B506C] hover:text-[#121334] transition-colors"
+            >
+              {isCollapsed ? (
+                <PanelLeftOpen className="w-4 h-4 text-[#5B4EB1]" />
+              ) : (
+                <PanelLeftClose className="w-4 h-4 text-[#4B506C]" />
+              )}
+            </button>
+
+            {/* Mobile Close Button */}
+            <button
+              onClick={() => setMobileOpen(false)}
+              className="flex lg:hidden items-center justify-center w-8 h-8 rounded-lg hover:bg-[#ECE1F3] text-[#4B506C]"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
-        <div className="w-full bg-[#E1D9F0] rounded-full h-1.5 overflow-hidden">
-          <div className="bg-gradient-to-r from-[#5B4EB1] to-[#7C6FCD] h-1.5 rounded-full" style={{ width: '29.5%' }}></div>
-        </div>
-        <div className="flex items-center justify-between text-[10px] text-[#8F92C0] font-mono mt-2">
-          <span>HOST: REFINERY-NODE-01</span>
-          <span className="text-emerald-700 font-bold">100% AIR-GAP</span>
-        </div>
-      </div>
-    </aside>
+
+        {/* Air-Gap Status Mini Pill (Hidden when collapsed) */}
+        {(!isCollapsed || mobileOpen) ? (
+          <div className="px-3.5 pt-3">
+            <div className="p-3 rounded-xl bg-gradient-to-r from-[#ECE1F3] to-[#FCFBFF] border border-[#E1D9F0] flex flex-col gap-1 shadow-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-mono font-bold text-[#4B506C] uppercase tracking-wider">
+                  Network Boundary
+                </span>
+                <span className="flex h-2 w-2 relative">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 text-emerald-800 text-xs font-mono font-bold mt-0.5">
+                <span>SECURE LOCAL ONLY</span>
+              </div>
+              <div className="text-[10px] text-[#8F92C0] font-mono">
+                Ext. API Calls: 0 (Strict Enforced)
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="px-2 pt-3 flex justify-center">
+            <div 
+              title="Air-Gap Enforced: Zero External Egress" 
+              className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center shadow-sm cursor-pointer"
+            >
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse"></span>
+            </div>
+          </div>
+        )}
+
+        {/* Navigation Links */}
+        <nav className="flex-1 px-3 py-3 space-y-1.5 overflow-y-auto custom-scrollbar">
+          {(!isCollapsed || mobileOpen) && (
+            <div className="px-2.5 py-1 text-[10px] font-mono font-bold text-[#8F92C0] tracking-wider uppercase">
+              Workspace Navigation
+            </div>
+          )}
+
+          {mainNavigation.map((item) => {
+            const Icon = item.icon;
+            return (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                end={item.path === '/'}
+                onClick={() => setMobileOpen(false)}
+                title={isCollapsed && !mobileOpen ? item.name : undefined}
+                className={({ isActive }) =>
+                  `flex items-center rounded-xl text-xs font-medium transition-all group ${
+                    isCollapsed && !mobileOpen
+                      ? 'justify-center p-2.5'
+                      : 'justify-between px-3 py-2.5'
+                  } ${
+                    isActive
+                      ? 'bg-[#E9D1F1] text-[#121334] border border-[#E1D9F0] font-bold shadow-sm'
+                      : 'text-[#4B506C] hover:text-[#121334] hover:bg-[#ECE1F3] border border-transparent'
+                  }`
+                }
+              >
+                <div className={`flex items-center gap-3 min-w-0 ${isCollapsed && !mobileOpen ? 'justify-center' : ''}`}>
+                  <Icon className="w-4 h-4 shrink-0 text-[#5B4EB1] transition-transform group-hover:scale-110" />
+                  {(!isCollapsed || mobileOpen) && (
+                    <span className="truncate text-xs font-sans tracking-tight">
+                      {item.name}
+                    </span>
+                  )}
+                </div>
+
+                {(!isCollapsed || mobileOpen) && item.badge && (
+                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-mono font-bold whitespace-nowrap shrink-0 ml-1 border border-[#E1D9F0] ${item.badgeColor || 'bg-[#ECE1F3] text-[#5B4EB1]'}`}>
+                    {item.badge}
+                  </span>
+                )}
+
+                {/* Dot indicator when collapsed */}
+                {isCollapsed && !mobileOpen && item.badge && (
+                  <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#5B4EB1]"></span>
+                )}
+              </NavLink>
+            );
+          })}
+        </nav>
+
+        {/* System Telemetry Compact Footer */}
+        {(!isCollapsed || mobileOpen) ? (
+          <div className="p-3.5 border-t border-[#E1D9F0] bg-[#FCFBFF] space-y-2">
+            <div className="flex items-center justify-between text-xs text-[#4B506C] font-mono">
+              <span className="flex items-center gap-1.5 font-bold text-[#121334]">
+                <HardDrive className="w-3.5 h-3.5 text-[#5B4EB1]" />
+                <span>GPU VRAM</span>
+              </span>
+              <span className="text-[#121334] font-bold">14.2 / 48 GB</span>
+            </div>
+            <div className="w-full bg-[#E1D9F0] rounded-full h-1.5 overflow-hidden">
+              <div 
+                className="bg-gradient-to-r from-[#5B4EB1] to-[#7C6FCD] h-1.5 rounded-full" 
+                style={{ width: '29.5%' }}
+              ></div>
+            </div>
+            <div className="flex items-center justify-between text-[10px] text-[#8F92C0] font-mono pt-1">
+              <span className="truncate">NODE: REFINERY-01</span>
+              <span className="text-emerald-700 font-bold shrink-0">100% AIR-GAP</span>
+            </div>
+          </div>
+        ) : (
+          <div className="p-2.5 border-t border-[#E1D9F0] bg-[#FCFBFF] flex flex-col items-center gap-1" title="VRAM: 14.2/48 GB">
+            <HardDrive className="w-4 h-4 text-[#5B4EB1]" />
+            <span className="text-[9px] font-mono text-[#4B506C] font-bold">30%</span>
+          </div>
+        )}
+      </aside>
+    </>
   );
 };
+
